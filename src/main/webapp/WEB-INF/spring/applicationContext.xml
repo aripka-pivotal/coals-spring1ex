@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+
+<beans>
+	<bean id="attendeeService" class="AttendeeServiceImpl">
+		<property name="attendeeDAO" ref="attendeeDao"/>
+	</bean>
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+      <property name="driverClassName"><value>org.hsqldb.jdbcDriver</value></property>
+      <property name="url">
+        <value>jdbc:hsqldb:mem:attendees</value>
+      </property>
+      <property name="username"><value>sa</value></property>
+      <property name="password"><value></value></property>
+    </bean>
+	
+	<bean id="sessionFactory"
+     class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+
+    <property name="dataSource">
+      <ref bean="dataSource"/>
+    </property>
+
+    <property name="hibernateProperties">
+       <props>
+         <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+         <prop key="hibernate.show_sql">true</prop>
+         <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+       </props>
+    </property>
+    
+    <property name="mappingResources">
+	<list>
+          <value>Attendee.hbm.xml</value>
+	</list>
+     </property>
+
+
+	</bean>
+	
+		<bean id="attendeeDao" class="HibernateAttendeeDAO" init-method="populate">
+		<constructor-arg ref="sessionFactory"/>
+	</bean>
+	
+	
+	
+</beans>
